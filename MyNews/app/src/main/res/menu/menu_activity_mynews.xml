@@ -7,14 +7,14 @@
         android:id="@+id/menu_activity_mynews_search"
         android:icon="@drawable/baseline_search_white_24dp"
         app:showAsAction="ifRoom"
-        android:title="Rechercher">
+        android:title="@string/search">
     </item>
 
     <item
         android:id="@+id/menu_activity_mynews_params"
         android:icon="@drawable/baseline_more_vert_white_24"
         app:showAsAction="ifRoom"
-        android:title="Paramètres">
+        android:title="@string/param">
     </item>
 
 </menu>
