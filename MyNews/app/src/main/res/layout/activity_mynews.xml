@@ -18,12 +18,14 @@
         >
 
 
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/activity_mynews_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:theme="@style/ToolBarStyle"/>
+
 
         <android.support.design.widget.TabLayout
             android:id="@+id/activity_mynews_tabs"
@@ -34,6 +36,9 @@
             app:tabTextColor="#D4E0F8"
             app:tabSelectedTextColor="#fff"/>
 
+
+
+
         <android.support.v4.view.ViewPager
             android:id="@+id/activity_mynews_viewpager"
             android:layout_width="match_parent"
@@ -43,6 +48,7 @@
             android:id="@+id/activity_mynews_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
 
     </LinearLayout>
 

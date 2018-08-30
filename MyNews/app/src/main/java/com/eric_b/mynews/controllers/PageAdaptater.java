@@ -10,6 +10,7 @@ import com.eric_b.mynews.controllers.fragments.TopStoriesFragment;
 
 class PageAdapter extends FragmentPagerAdapter{
 
+
     // 2 - Default Constructor
     PageAdapter(FragmentManager mgr) {
         super(mgr);
@@ -42,4 +43,7 @@ class PageAdapter extends FragmentPagerAdapter{
     }
 
 
+    public void setItem(int setPosition){
+        this.getItem(setPosition);
+    }
 }
