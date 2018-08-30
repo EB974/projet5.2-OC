@@ -1,14 +1,18 @@
 package com.eric_b.mynews.controllers;
 
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -47,10 +51,28 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
         // 6 - Configure all views
         this.configureToolBar();
         this.configureDrawerLayout();
-        this.configureNavigationView();
 
+
+        this.configureViewPagerAndTabs();
+        this.configureNavigationView();
         this.showFirstFragment();
 
+    }
+
+    private void configureViewPagerAndTabs(){
+        // 1 - Get ViewPager from layout
+        ViewPager pager = findViewById(R.id.activity_mynews_viewpager);
+        // 2 - Set Adapter PageAdapter and glue it together
+        pager.setAdapter(new PageAdapter(getSupportFragmentManager()));
+
+        // 1 - Get TabLayout from layout
+        TabLayout tabs= findViewById(R.id.activity_mynews_tabs);
+
+        // 2 - Glue TabLayout and ViewPager together
+        tabs.setupWithViewPager(pager);
+
+        // 3 - Design purpose. Tabs have the same width
+        tabs.setTabMode(TabLayout.MODE_FIXED);
     }
 
     @Override
@@ -64,7 +86,7 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         // 4 - Handle Navigation Item Click
         int id = item.getItemId();
@@ -139,7 +161,8 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
     // 5 - Show fragment according an Identifier
 
     private void showFragment(int fragmentIdentifier){
-        switch (fragmentIdentifier){
+
+         switch (fragmentIdentifier){
             case FRAGMENT_TOP :
                 this.showTopFragment();
                 break;
@@ -151,7 +174,7 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
                 break;
             default:
                 break;
-        }
+        } 
     }
 
 
@@ -182,8 +205,9 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
     // 3 - Generic method that will replace and show a fragment inside the MainActivity Frame Layout
     private void startTransactionFragment(Fragment fragment){
         if (!fragment.isVisible()){
+            Log.d("mynews","strat ransaction");
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.activity_mynews_frame_layout, fragment).commit();
+                    .replace(R.id.activity_mynews_frame_layout, fragment).show(fragment).commit();
         }
     }
 
