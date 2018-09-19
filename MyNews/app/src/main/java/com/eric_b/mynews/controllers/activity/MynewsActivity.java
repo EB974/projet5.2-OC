@@ -1,4 +1,4 @@
-package com.eric_b.mynews.controllers;
+package com.eric_b.mynews.controllers.activity;
 
 
 import android.support.annotation.NonNull;
@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.eric_b.mynews.controllers.fragments.BusinessFragment;
 import com.eric_b.mynews.controllers.fragments.MostPopularFragment;
@@ -26,7 +27,6 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
     //FOR DESIGN
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
 
     //FOR FRAGMENTS
     // 1 - Declare fragment handled by Navigation Drawer
@@ -50,11 +50,9 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
         // 6 - Configure all views
         this.configureToolBar();
         this.configureDrawerLayout();
-
-
         this.configureViewPagerAndTabs(0);
         this.configureNavigationView();
-        //this.showFirstFragment();
+
 
     }
 
@@ -75,13 +73,8 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
         TabLayout.Tab tab = tabs.getTabAt(setTabs);
         assert tab != null;
         tab.select();
-        setMenuItem(setTabs);
     }
 
-    private void setMenuItem(int item){
-
-
-    }
 
     @Override
     public void onBackPressed() {
@@ -95,7 +88,6 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         // 4 - Handle Navigation Item Click
         int id = item.getItemId();
         switch (id){
@@ -115,7 +107,12 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
         return true;
     }
 
-    // ---------------------
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        return super.onMenuOpened(featureId, menu);
+    }
+
+// ---------------------
     // CONFIGURATION
     // ---------------------
 
@@ -127,17 +124,33 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
 
 
     // 2 - Configure Drawer Layout
-    private void configureDrawerLayout(){
+    private void configureDrawerLayout() {
         this.drawerLayout =  findViewById(R.id.activity_mynews_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+
+            /**
+             * Called when a view has been clicked.
+             *
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+
+            }
+
+        });
+
+
+
         toggle.syncState();
     }
 
 
     // 3 - Configure NavigationView
-    private void configureNavigationView(){
-        this.navigationView = findViewById(R.id.activity_mynews_nav_view);
+    public void configureNavigationView(){
+        NavigationView navigationView = findViewById(R.id.activity_mynews_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -175,21 +188,21 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
 
     private void showTopFragment(){
         if (this.fragmentTop == null) this.fragmentTop = new TopStoriesFragment();
-        this.startTransactionFragment(this.fragmentTop);
+        this.startTransactionFragment(this.fragmentTop,"TopStories");
         configureViewPagerAndTabs(0);
     }
 
 
     private void showPopularFragment(){
         if (this.fragmentPopular == null) this.fragmentPopular = new MostPopularFragment();
-        this.startTransactionFragment(this.fragmentPopular);
+        this.startTransactionFragment(this.fragmentPopular,"MostPopular");
         configureViewPagerAndTabs(1);
     }
 
 
     private void showBusinessFragment(){
         if (this.fragmentBusiness == null) this.fragmentBusiness = new BusinessFragment();
-        this.startTransactionFragment(this.fragmentBusiness);
+        this.startTransactionFragment(this.fragmentBusiness,"Business");
         configureViewPagerAndTabs(2);
     }
 
@@ -197,11 +210,12 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
     // ---
 
     // 3 - Generic method that will replace and show a fragment inside the MainActivity Frame Layout
-    private void startTransactionFragment(Fragment fragment){
+    private void startTransactionFragment(Fragment fragment, String nameFragment){
         if (!fragment.isVisible()){
-            Log.d("mynews","strat ransaction");
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.activity_mynews_frame_layout, fragment).commit();
+                    .replace(R.id.activity_mynews_frame_layout, fragment,nameFragment).commit();
         }
     }
+
+
 }

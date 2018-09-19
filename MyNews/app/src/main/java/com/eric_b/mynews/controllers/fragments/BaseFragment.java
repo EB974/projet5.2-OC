@@ -2,6 +2,7 @@ package com.eric_b.mynews.controllers.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import butterknife.ButterKnife;
 import icepick.Icepick;
 
 public abstract class BaseFragment extends Fragment {
+    public NavigationView navigationView;
 
     // 1 - Force developer implement those methods
 
@@ -60,4 +62,5 @@ public abstract class BaseFragment extends Fragment {
         Icepick.saveInstanceState(this, outState);
 
     }
+
 }

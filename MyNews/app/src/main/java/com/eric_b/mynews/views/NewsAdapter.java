@@ -34,6 +34,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         this.glide = glide;
     }
 
+    public interface Listeners {
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         PostItemListener mItemListener;
@@ -52,8 +55,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
 
 
-
-
         @Override
         public void onClick(View view) {
             Result item = getResults(getAdapterPosition());
@@ -65,7 +66,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     @Override
     public NewsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View postView = inflater.inflate(R.layout.news_item, parent, false);
@@ -75,7 +75,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(NewsAdapter.ViewHolder holder, int position) {
-
         Result item = mItems.get(position);
         List<Multimedium> multimediaItems = item.getMultimedia();
         try {
@@ -91,10 +90,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         newsDate = holder.dateTv;
         newsTitle.setText(item.getTitle());
         newsDate.setText(dateApater(item.getUpdatedDate()));
-        //multimedia = Multimedium;
-        //String photoUrl = multimedia.getUrl();
-        Log.d("repro","item "+multimediaItems.size());
-        //glide.load(multimedia.getUrl()).apply(RequestOptions.noTransformation()).into(holder.imageTv);
     }
 
     @Override
@@ -112,7 +107,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     }
 
     public interface PostItemListener {
-        void onPostClick(String title);
+        void onPostClick(String url);
     }
 
     private String dateApater(String newsDate){
