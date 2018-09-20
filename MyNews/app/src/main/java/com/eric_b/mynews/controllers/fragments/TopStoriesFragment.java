@@ -17,56 +17,38 @@ import com.bumptech.glide.Glide;
 import com.eric_b.mynews.R;
 import com.eric_b.mynews.models.Result;
 import com.eric_b.mynews.models.TopStoriePojo;
-import com.eric_b.mynews.utils.ApiUtils;
-import com.eric_b.mynews.utils.NyTimesService;
+import com.eric_b.mynews.utils.TimesStream;
 import com.eric_b.mynews.views.NewsAdapter;
 import com.eric_b.mynews.views.NewsWebView;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.State;
 import io.reactivex.disposables.Disposable;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.observers.DisposableObserver;
+
 
 
 public class TopStoriesFragment extends BaseFragment implements NewsAdapter.Listeners {
 
 
     @BindView(R.id.topstories_recycler_view) RecyclerView mRecyclerView;
-    @BindView(R.id.topstories_fragment_swipe_container)
+    @BindView(R.id.topstories_fragment_swipe_container) SwipeRefreshLayout swipeRefreshLayout;
 
-    SwipeRefreshLayout swipeRefreshLayout;
-
-    @State
-    int memory;
+    Bundle memory;
 
     private Disposable disposable;
-    private NyTimesService mService;
-    private View view;
-    //private RecyclerView mRecyclerView;
     private NewsAdapter mAdapter;
-    private List<Result> newsList;
     final String NEWS_URL = "News_URL";
-    private RecyclerView.LayoutManager mLayoutManager;
     private int recoverPosition;
 
     public TopStoriesFragment() {
-
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState!= null) {
-            recoverPosition = savedInstanceState.getInt("POSITION");
-        }
     }
 
     @Override
@@ -76,11 +58,11 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         int lastFirstVisiblePosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
         outState.putInt("POSITION",lastFirstVisiblePosition);
-
+        Log.e("repro","onSaveInstanceState "+lastFirstVisiblePosition);
     }
 
 // --------------
@@ -105,11 +87,14 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_top_stories, container, false);
+        View view = inflater.inflate(R.layout.fragment_top_stories, container, false);
         ButterKnife.bind(this, view);
         this.configureSwipeRefreshLayout();
-        mService = ApiUtils.getNyTimesService();
         configureRecyclerView();
+        if (savedInstanceState!= null) {
+            recoverPosition = savedInstanceState.getInt("POSITION");
+        }
+        Log.e("repro","position "+recoverPosition);
         loadAnswers();
         return view;
     }
@@ -125,8 +110,8 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
             }
         });
         mRecyclerView.setAdapter(mAdapter);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(Objects.requireNonNull(getActivity()), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(itemDecoration);
@@ -139,34 +124,32 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
             public void onRefresh() {
                 loadAnswers();
             }
-
         });
-
     }
 
     public void loadAnswers() {
-        mService.getNews("home").enqueue(new Callback<TopStoriePojo>() {
+        this.disposable = TimesStream.streamFetchNews("home").subscribeWith(new DisposableObserver <TopStoriePojo>() {
 
             @Override
-            public void onResponse(@NonNull Call<TopStoriePojo> call, @NonNull Response<TopStoriePojo> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    mAdapter.updateAnswers(response.body().getResults());
+            public void onNext(TopStoriePojo response) {
+                if (response.getNumResults() > 0) {
+                    mAdapter.updateAnswers(response.getResults());
                     updateUI();
                     Log.d("repro", "posts loaded from API");
-                } else {
-                    int statusCode = response.code();
-                    Log.d("repro", "status Code"+statusCode);
-                    // handle request errors depending on status code
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<TopStoriePojo> call, @NonNull Throwable t) {
+            public void onError(Throwable e) {
                 //showErrorMessage();
-                Log.d("repro", "error loading from API");
-
+                Log.e("TAG","On Error"+Log.getStackTraceString(e));
             }
+
+            @Override
+            public void onComplete() {
+                Log.e("TAG","On Complete !!");
+            }
+
         });
     }
 
@@ -180,4 +163,5 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
     private void disposeWhenDestroy(){
         if (this.disposable != null && !this.disposable.isDisposed()) this.disposable.dispose();
     }
+
 }

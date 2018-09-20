@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +20,7 @@ import com.eric_b.mynews.controllers.fragments.BusinessFragment;
 import com.eric_b.mynews.controllers.fragments.MostPopularFragment;
 import com.eric_b.mynews.controllers.fragments.TopStoriesFragment;
 import com.eric_b.mynews.R;
+
 
 public class MynewsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -40,13 +40,10 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
     private static final int FRAGMENT_POPULAR = 1;
     private static final int FRAGMENT_BUSSINESS = 2;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mynews);
-
         // 6 - Configure all views
         this.configureToolBar();
         this.configureDrawerLayout();
@@ -141,9 +138,6 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
             }
 
         });
-
-
-
         toggle.syncState();
     }
 
