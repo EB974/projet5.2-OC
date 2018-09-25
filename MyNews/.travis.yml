@@ -1,0 +1,9 @@
+sudo: false
+
+language: android
+components:
+    - build-tools-27.1.1
+    - android-27
+    - sys-img-armeabi-v7a-android-tv-l
+    - add-on
+    - extra

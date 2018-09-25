@@ -83,7 +83,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         newsTitle = holder.titleTv;
         newsDate = holder.dateTv;
         newsTitle.setText(item.getTitle());
-        newsDate.setText(dateApater(item.getUpdatedDate()));
+        newsDate.setText(dateAdapter(item.getUpdatedDate()));
     }
 
     @Override
@@ -104,7 +104,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         void onPostClick(String url);
     }
 
-    private String dateApater(String newsDate){
+    public static String dateAdapter(String newsDate){
         String mDate = newsDate;
         String mDay = mDate.substring(0,10);
 
@@ -120,6 +120,5 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         newsDate = mDay+" "+mDate.substring(11,16);
         return newsDate;
     }
-
 
 }
