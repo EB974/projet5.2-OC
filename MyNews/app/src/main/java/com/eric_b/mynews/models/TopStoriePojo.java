@@ -4,6 +4,9 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+
 public class TopStoriePojo {
 
     @SerializedName("status")
@@ -73,4 +76,12 @@ public class TopStoriePojo {
         this.results = results;
     }
 
+    /**
+     * Operator implementations (both source and intermediate) should implement this method that
+     * performs the necessary business logic.
+     * <p>There is no need to call any of the plugin hooks on the current Observable instance or
+     * the Subscriber.
+     *
+     * @param observer the incoming Observer, never null
+     */
 }

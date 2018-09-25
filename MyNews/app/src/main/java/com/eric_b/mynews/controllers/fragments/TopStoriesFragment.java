@@ -22,6 +22,7 @@ import com.eric_b.mynews.views.NewsAdapter;
 import com.eric_b.mynews.views.NewsWebView;
 import java.util.ArrayList;
 import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.State;
@@ -36,19 +37,14 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
     @BindView(R.id.topstories_recycler_view) RecyclerView mRecyclerView;
     @BindView(R.id.topstories_fragment_swipe_container) SwipeRefreshLayout swipeRefreshLayout;
 
-    Bundle memory;
+    @State Bundle memory;
 
     private Disposable disposable;
     private NewsAdapter mAdapter;
-    final String NEWS_URL = "News_URL";
+    private final String NEWS_URL = "News_URL";
     private int recoverPosition;
-
+    private static final String TAG = TopStoriesFragment.class.getSimpleName();
     public TopStoriesFragment() {
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -62,7 +58,7 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
         super.onSaveInstanceState(outState);
         int lastFirstVisiblePosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
         outState.putInt("POSITION",lastFirstVisiblePosition);
-        Log.e("repro","onSaveInstanceState "+lastFirstVisiblePosition);
+        Log.d(TAG, "onSaveInstanceState() called with: outState = [" + outState + "]");
     }
 
 // --------------
@@ -94,13 +90,14 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
         if (savedInstanceState!= null) {
             recoverPosition = savedInstanceState.getInt("POSITION");
         }
-        Log.e("repro","position "+recoverPosition);
+        Log.e(TAG,"position "+recoverPosition);
+        Log.d(TAG, "onCreateView() called with: inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
         loadAnswers();
         return view;
     }
 
     private void configureRecyclerView(){
-        this.mAdapter = new NewsAdapter( getActivity(), new ArrayList<Result>(0), Glide.with(this), new NewsAdapter.PostItemListener() {
+        this.mAdapter = new NewsAdapter( new ArrayList<Result>(0), Glide.with(this), new NewsAdapter.PostItemListener() {
 
             @Override
             public void onPostClick(String url) {
@@ -127,7 +124,7 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
         });
     }
 
-    public void loadAnswers() {
+    private void loadAnswers() {
         this.disposable = TimesStream.streamFetchNews("home").subscribeWith(new DisposableObserver <TopStoriePojo>() {
 
             @Override
@@ -135,21 +132,20 @@ public class TopStoriesFragment extends BaseFragment implements NewsAdapter.List
                 if (response.getNumResults() > 0) {
                     mAdapter.updateAnswers(response.getResults());
                     updateUI();
-                    Log.d("repro", "posts loaded from API");
+                    Log.d(TAG, "onNext() called with: response = [" + response + "]");
                 }
             }
 
             @Override
             public void onError(Throwable e) {
                 //showErrorMessage();
-                Log.e("TAG","On Error"+Log.getStackTraceString(e));
+                Log.e(TAG, "onError() called with: e = [" + e + "]");
             }
 
             @Override
             public void onComplete() {
-                Log.e("TAG","On Complete !!");
+                Log.d(TAG,"On Complete !!");
             }
-
         });
     }
 

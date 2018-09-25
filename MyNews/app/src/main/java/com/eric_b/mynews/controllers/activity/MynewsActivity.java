@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,8 +50,6 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
         this.configureDrawerLayout();
         this.configureViewPagerAndTabs(0);
         this.configureNavigationView();
-
-
     }
 
     private void configureViewPagerAndTabs(int setTabs){
@@ -125,20 +124,13 @@ public class MynewsActivity extends AppCompatActivity implements NavigationView.
         this.drawerLayout =  findViewById(R.id.activity_mynews_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-
-            /**
-             * Called when a view has been clicked.
-             *
-             * @param v The view that was clicked.
-             */
             @Override
             public void onClick(View v) {
-
+                Log.e("repro","toggle clicked");
             }
-
         });
-        toggle.syncState();
     }
 
 
