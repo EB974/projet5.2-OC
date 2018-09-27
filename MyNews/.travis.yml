@@ -1,5 +1,5 @@
 
-language: android 
+language: java 
 android: 
 components: 
 - build-tools-27.1.1 
